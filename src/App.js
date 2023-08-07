@@ -1,23 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useRef, useEffect } from 'react';
 
 function App() {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const constraints = { video: true };
+
+    const handleSuccess = (stream) => {
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    };
+
+    const handleError = (error) => {
+      console.error('Erreur d\'accès à la webcam :', error);
+    };
+
+    navigator.mediaDevices.getUserMedia(constraints)
+      .then(handleSuccess)
+      .catch(handleError);
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Affichage de la webcam en temps réel</h1>
+      <video ref={videoRef} autoPlay playsInline></video>
     </div>
   );
 }
