@@ -1,32 +1,25 @@
-import React, { useRef, useEffect } from 'react';
+import { BlurFilter } from 'pixi.js';
+import { Stage, Container, Sprite, Text } from '@pixi/react';
+import { useMemo } from 'react';
 
-function App() {
-  const videoRef = useRef(null);
-
-  useEffect(() => {
-    const constraints = { video: true };
-
-    const handleSuccess = (stream) => {
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-    };
-
-    const handleError = (error) => {
-      console.error('Erreur d\'accès à la webcam :', error);
-    };
-
-    navigator.mediaDevices.getUserMedia(constraints)
-      .then(handleSuccess)
-      .catch(handleError);
-  }, []);
+export const App = () =>
+{
+  const blurFilter = useMemo(() => new BlurFilter(4), []);
 
   return (
-    <div className="App">
-      <h1>Affichage de la webcam en temps réel</h1>
-      <video ref={videoRef} autoPlay playsInline></video>
-    </div>
+    <Stage>
+      <Sprite
+        image="https://pixijs.io/pixi-react/img/bunny.png"
+        x={400}
+        y={270}
+        anchor={{ x: 0.5, y: 0.5 }}
+      />
+
+      <Container x={400} y={330}>
+        <Text text="Hello World" anchor={{ x: 0.5, y: 0.5 }} filters={[blurFilter]} />
+      </Container>
+    </Stage>
   );
-}
+};
 
 export default App;
